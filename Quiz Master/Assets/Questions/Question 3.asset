@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ce61f69b8d2c1f49afe8a7bf2c14b40, type: 3}
   m_Name: Question 3
   m_EditorClassIdentifier: 
-  question: Which of the following syntax creates a comment?
+  strQuestion: Which of the following syntax creates a comment?
+  strAnswers:
+  - \\
+  - '||'
+  - ()
+  - //
+  intCorrectAnswerIndex: 3
