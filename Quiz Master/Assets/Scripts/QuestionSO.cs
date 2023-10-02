@@ -9,7 +9,7 @@ using UnityEngine;
 public class QuestionSO : ScriptableObject //change mono to scriptable
 {
     [TextArea(2,6)] //makes the text box in unity expand from 2 lines up to 6 lines
-    [SerializeField] string question = "Enter new question text here";
+    [SerializeField] string strQuestion = "Enter new question text here";
 
 
 }
