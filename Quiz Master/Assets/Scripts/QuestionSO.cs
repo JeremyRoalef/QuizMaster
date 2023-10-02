@@ -11,5 +11,9 @@ public class QuestionSO : ScriptableObject //change mono to scriptable
     [TextArea(2,6)] //makes the text box in unity expand from 2 lines up to 6 lines
     [SerializeField] string strQuestion = "Enter new question text here";
 
-
+    public string GetQuestion() //void was the spot where the function would return a value. in this case, the function will return a string
+    {
+        return strQuestion;
+    }
 }
+
