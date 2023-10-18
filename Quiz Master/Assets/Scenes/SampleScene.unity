@@ -1177,6 +1177,8 @@ MonoBehaviour:
   fltTimeToCompleteQuestion: 5
   fltTimeToShowCOrrectAnswer: 10
   boolIsAnsweringQuestion: 0
+  fltFillFraction: 0
+  boolLoadNextQuestion: 1
 --- !u!4 &673869758
 Transform:
   m_ObjectHideFlags: 0

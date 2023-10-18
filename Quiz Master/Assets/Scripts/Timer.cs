@@ -10,10 +10,17 @@ public class Timer : MonoBehaviour
     public bool boolIsAnsweringQuestion = false;
 
     float fltTimerValue;
+    public float fltFillFraction;
+    public bool boolLoadNextQuestion = true;
 
     void Update()
     {
         UpdateTimer();
+    }
+
+    public void CancelTimer()
+    {
+        fltTimerValue = 0;
     }
 
     void UpdateTimer()
@@ -21,18 +28,27 @@ public class Timer : MonoBehaviour
         fltTimerValue -=Time.deltaTime;
 
         if (boolIsAnsweringQuestion) {
-            if (fltTimerValue <=0)
+            if (fltTimerValue >0)
             {
-                boolIsAnsweringQuestion=false;
+                fltFillFraction = fltTimerValue / fltTimeToCompleteQuestion;
+            }
+            else
+            {
+                boolIsAnsweringQuestion = false;
                 fltTimerValue = fltTimeToShowCOrrectAnswer;
             }
         }
         else
         {
-            if (fltTimerValue <=0)
+            if (fltTimerValue > 0)
+            {
+                fltFillFraction = fltTimerValue / fltTimeToShowCOrrectAnswer;
+            }
+            else
             {
                 boolIsAnsweringQuestion = true;
                 fltTimerValue = fltTimeToCompleteQuestion;
+                boolLoadNextQuestion = true;
             }
         }
 
@@ -42,7 +58,7 @@ public class Timer : MonoBehaviour
 
         }
 
-        Debug.Log(fltTimerValue);
+        Debug.Log(boolIsAnsweringQuestion + ": " + fltTimerValue + " = " + fltFillFraction);
     }
 
 }
