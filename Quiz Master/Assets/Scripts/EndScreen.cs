@@ -5,17 +5,23 @@ using TMPro;
 
 public class EndScreen : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI finalScoreText;
-    ScoreKeeper scoreKeeper;
+    [SerializeField]
+    TextMeshProUGUI finalScoreText;
 
-    void Awake()
-    {
-        scoreKeeper = FindObjectOfType<ScoreKeeper>();
-    }
+    [SerializeField]
+    ScoreKeeper scoreKeeper;
 
     public void ShowFinalScore()
     {
-        finalScoreText.text = "Congratulations! \nYou got a score of " +
-            scoreKeeper.CalculateScore() + "%";
+        float finalScore = scoreKeeper.GetFinalScore();
+
+        if (finalScore > 70)
+        {
+            finalScoreText.text = $"Congratulations!\nYou got a score of {scoreKeeper.GetFinalScore():F2}%";
+        }
+        else
+        {
+            finalScoreText.text = $"You failed the quiz.\nYour final score was {scoreKeeper.GetFinalScore():F2}%";
+        }
     }
 }

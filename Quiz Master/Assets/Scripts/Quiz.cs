@@ -6,113 +6,150 @@ using UnityEngine.UI;
 
 public class Quiz : MonoBehaviour
 {
-    [Header("Questions")]
-    [SerializeField] TextMeshProUGUI questionText;
-    QuestionSO currentQuestion;
-    [SerializeField] List<QuestionSO> questions = new List<QuestionSO>();
+    [Header("Canvas References")]
+    [SerializeField]
+    TextMeshProUGUI questionText;
 
-    [Header("Answers")]
-    [SerializeField] GameObject[] answerButton;
-    int intCorrectAnswerIndex;
-    bool boolHasAnsweredEarly = true;
+    [SerializeField] 
+    Slider progressBar;
+
+    [SerializeField]
+    AnswerButton[] answerButtons;
+
+    [SerializeField]
+    GameObject gamePanel;
+
+    [Header("Sprites")]
+    [SerializeField]
+    Sprite defaultAnswerSprite;
+
+    [SerializeField] 
+    Sprite correctAnswerSprite;
 
 
-    [Header("Buttons")]
-    [SerializeField]  Sprite defaultAnswerSprite;
-    [SerializeField]  Sprite correctAnswerSprite;
 
-    [Header("Timer")]
-    [SerializeField] Image timerImage;
+    [Header("Other References")]
+    [SerializeField]
+    List<QuestionSO> questions = new List<QuestionSO>();
+
+    [SerializeField]
     Timer timer;
 
-    [Header("Scoring")]
-    [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField]
     ScoreKeeper scoreKeeper;
 
-    [Header("Progress Bar")]
-    [SerializeField] Slider progressBar;
 
 
-    public bool boolIsComplete;
+    QuestionSO currentQuestion;
+
+    int selectedButtonIndex = -1;
+
+    public bool IsComplete { get; private set; }
+    bool isAnsweringQuestion;
+    bool hasAnsweredEarly;
+
+    static int NO_BUTTON_SELECTED_INDEX = -1;
 
     void Awake()
     {
-        timer = FindObjectOfType<Timer>();
-        scoreKeeper = FindObjectOfType<ScoreKeeper>();
         progressBar.maxValue = questions.Count;
         progressBar.value = 0;
+
+        //Start quiz by answering the question
+        isAnsweringQuestion = true;
+        GetRandomCurrentQuestion();
+        DisplayQuestion();
+        timer.SetTimer(isAnsweringQuestion);
+        scoreKeeper.UpdateScore();
     }
 
     void Update()
     {
-        timerImage.fillAmount = timer.fltFillFraction;
-        if (timer.boolLoadNextQuestion)
+        if (timer.isOutOfTime)
         {
-            if (progressBar.value == progressBar.maxValue)
+            //Swap state of answering question
+            isAnsweringQuestion = !isAnsweringQuestion;
+
+            //Reset the timer
+            timer.SetTimer(isAnsweringQuestion);
+            
+            //If the time to answer question has run out, then show the answer. Otherwise, start next question
+            if (!isAnsweringQuestion)
             {
-                boolIsComplete = true;
+                //Check if the player answered early
+                if (!hasAnsweredEarly)
+                {
+                    selectedButtonIndex = NO_BUTTON_SELECTED_INDEX;
+                }
+
+                DisplayAnswer(selectedButtonIndex);
+                SetButtonState(false);
                 return;
             }
 
-            boolHasAnsweredEarly = false;
+            //Check if there are no more quesitons to answer
+            if (answerButtons.Length == 0)
+            {
+                IsComplete = true;
+                return;
+            }
+
+            //Load the next question
             GetNextQuestion();
-            timer.boolLoadNextQuestion = false;
-        }
-        else if (!boolHasAnsweredEarly && !timer.boolIsAnsweringQuestion)
-        {
-            DisplayAnswer(-1);
-            SetButtonState(false);
         }
     }
 
-    void DisplayAnswer(int intIndex)
+    void DisplayAnswer(int selectedButtonIndex)
     {
         Image buttonImage;
 
-        if (intIndex == currentQuestion.GetCorrectAnswerIndex())
+        Debug.Log("Selected button index: "+ selectedButtonIndex);
+        Debug.Log("correct answer index: " + currentQuestion.GetCorrectAnswerIndex());
+
+        if (selectedButtonIndex == currentQuestion.GetCorrectAnswerIndex())
         {
             questionText.text = "Correct";
-            buttonImage = answerButton[intIndex].GetComponent<Image>();
+            buttonImage = answerButtons[selectedButtonIndex].GetImage();
             buttonImage.sprite = correctAnswerSprite;
             scoreKeeper.IncrementCorrectAnswers();
         }
         else
         {
-            intCorrectAnswerIndex = currentQuestion.GetCorrectAnswerIndex();
-            string strCorrectAnswer = currentQuestion.GetAnswer(intCorrectAnswerIndex);
+            int correctAnswerIndex = currentQuestion.GetCorrectAnswerIndex();
+            string strCorrectAnswer = currentQuestion.GetAnswer(correctAnswerIndex);
             questionText.text = "The correct answer was;\n" + strCorrectAnswer;
-            buttonImage = answerButton[intCorrectAnswerIndex].GetComponent<Image>();
+            buttonImage = answerButtons[correctAnswerIndex].GetImage();
             buttonImage.sprite = correctAnswerSprite;
         }
     }
-
-    public void OnAnswerSelected(int intIndex)
+    public void OnAnswerSelected(int selectedButtonIndex)
     {
-        boolHasAnsweredEarly = true;
-        DisplayAnswer(intIndex);
-        SetButtonState(false);
-        timer.CancelTimer();
-        scoreText.text = "Score: " + scoreKeeper.CalculateScore() + "%";
+        //Set the selected index
+        this.selectedButtonIndex = selectedButtonIndex;
+        hasAnsweredEarly = true;
 
-
+        timer.EndTimer();
     }
-
     void GetNextQuestion()
     {
-        if (questions.Count > 0)
+        if (questions.Count <= 0)
         {
-            SetButtonState(true);
-            SetDefaultButtonSprite();
-            GetRandomQuestion();
-            DisplayQuestion();
-            progressBar.value++;
+            //quiz is complete
+            IsComplete = true;
             scoreKeeper.IncrementQuestionsSeen();
+            return;
         }
 
-
+        hasAnsweredEarly = false;
+        SetButtonState(true);
+        SetDefaultButtonSprite();
+        GetRandomCurrentQuestion();
+        DisplayQuestion();
+        progressBar.value++;
+        scoreKeeper.IncrementQuestionsSeen();
+        scoreKeeper.UpdateScore();
     }
-
-    void GetRandomQuestion()
+    void GetRandomCurrentQuestion()
     {
         int intIndex = Random.Range(0, questions.Count);
         currentQuestion = questions[intIndex];
@@ -121,37 +158,36 @@ public class Quiz : MonoBehaviour
         {
             questions.Remove(currentQuestion);
         }
-
     }
-
     void DisplayQuestion()
     {
         questionText.text = currentQuestion.GetQuestion();
-
-
-
-        for (int i = 0; i < answerButton.Length; i++)
+        for (int i = 0; i < answerButtons.Length; i++)
         {
-            TextMeshProUGUI buttonText = answerButton[i].GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI buttonText = answerButtons[i].GetTextMeshProUGUI();
             buttonText.text = currentQuestion.GetAnswer(i);
         }
     }
     void SetButtonState(bool boolState)
     {
-        for(int i = 0; i< answerButton.Length;i++)
+        for(int i = 0; i< answerButtons.Length;i++)
         {
-            Button button = answerButton[i].GetComponent<Button>();
+            Button button = answerButtons[i].GetButton();
             button.interactable = boolState;
         }
     }
-
     void SetDefaultButtonSprite()
     {
-        for (int i = 0; i < answerButton.Length; i++)
+        for (int i = 0; i < answerButtons.Length; i++)
         {
             Image buttonImage;
-            buttonImage = answerButton[i].GetComponent<Image>();
+            buttonImage = answerButtons[i].GetImage();
             buttonImage.sprite = defaultAnswerSprite;
         }
+    }
+
+    public void HideGame()
+    {
+        gamePanel.SetActive(false);
     }
 }

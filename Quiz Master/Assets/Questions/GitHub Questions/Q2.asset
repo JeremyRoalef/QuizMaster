@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce61f69b8d2c1f49afe8a7bf2c14b40, type: 3}
+  m_Name: Q2
+  m_EditorClassIdentifier: 
+  strQuestion: How do you clone a repository?
+  strAnswers:
+  - In Github Desktop, click on Repositry -> Pull.
+  - In GitHub Desktop, click on the "Fetch origin" button to get your repository.
+  - In GitHub Desktop, choose the URL of your online project and select a folder
+    on your desktop to clone it to.
+  - On your desktop, create a new folder named the exact same as your GitHub repository.
+  intCorrectAnswerIndex: 2

@@ -1,34 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ScoreKeeper : MonoBehaviour
 {
-    int intCorrectAnswers = 0;
-    int intQuestionsSeen = 0;
+    [SerializeField]
+    TextMeshProUGUI scoreText;
+
+    int questionsAnsweredCorrectly = 0;
+    int totalQuestionsAnswered = 0;
 
     public int GetCorrectAnswers()
     {
-        return intCorrectAnswers;
+        return questionsAnsweredCorrectly;
     }
 
     public void IncrementCorrectAnswers()
     {
-        intCorrectAnswers++;
-    }
-
-    public int GetQuestionsSeen()
-    {
-        return intQuestionsSeen;
+        questionsAnsweredCorrectly++;
     }
 
     public void IncrementQuestionsSeen()
     {
-        intQuestionsSeen++;
+        totalQuestionsAnswered++;
     }
 
-    public int CalculateScore()
+    public void UpdateScore()
     {
-        return Mathf.RoundToInt(intCorrectAnswers / (float)intQuestionsSeen * 100);
+        float score = totalQuestionsAnswered == 0? 0 : questionsAnsweredCorrectly / (float)totalQuestionsAnswered * 100;
+        scoreText.text = $"Score: {score:F2}%";
+    }
+
+    public float GetFinalScore()
+    {
+        return questionsAnsweredCorrectly / (float)totalQuestionsAnswered * 100;
     }
 }

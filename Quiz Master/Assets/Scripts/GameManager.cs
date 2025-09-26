@@ -5,18 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
     Quiz quiz;
+
+    [SerializeField]
     EndScreen endScreen;
 
-    private void Awake()
-    {
-        quiz = FindObjectOfType<Quiz>();
-        endScreen = FindObjectOfType<EndScreen>();
-    }
+    const string MAIN_MENU_SCENE = "MainMenuScene";
+
     void Start()
     {
-
-
         quiz.gameObject.SetActive(true);
         endScreen.gameObject.SetActive(false);
     }
@@ -24,16 +22,20 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (quiz.boolIsComplete)
-        {
-            quiz.gameObject.SetActive(false);
-            endScreen.gameObject.SetActive(true);
-            endScreen.ShowFinalScore();
-        }
+        if (!quiz.IsComplete) return;
+
+        quiz.HideGame();
+        endScreen.gameObject.SetActive(true);
+        endScreen.ShowFinalScore();
     }
 
     public void OnReplayLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void OnButtonReturnToMainMenuClick()
+    {
+        SceneManager.LoadScene(MAIN_MENU_SCENE);
     }
 }

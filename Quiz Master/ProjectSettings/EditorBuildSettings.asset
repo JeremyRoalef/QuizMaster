@@ -6,6 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/MainMenuScene.unity
+    guid: 282cca2efdc23434f91078120a8cc844
+  - enabled: 1
+    path: Assets/Scenes/CITA212QuestionsScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/GitHubQuestionsScene.unity
+    guid: f21b90d9d82c42c47ac755a23f78a1e0
+  - enabled: 1
+    path: Assets/Scenes/MathQuestionsScene.unity
+    guid: dd29ae3a613270e4e9b7c9a46b2ea759
+  - enabled: 1
+    path: Assets/Scenes/ProgrammingQuestionsScene.unity
+    guid: 461fb1ab6336c5b45832a510734b14a8
   m_configObjects: {}

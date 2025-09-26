@@ -1,64 +1,64 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] float fltTimeToCompleteQuestion = 30f;
-    [SerializeField] float fltTimeToShowCOrrectAnswer = 10f;
+    [SerializeField]
+    float timeToAnswerQuestion = 30f;
+    
+    [SerializeField]
+    float timeToShowCorrectAnswer = 10f;
 
-    public bool boolIsAnsweringQuestion = false;
+    [SerializeField]
+    Image timerImage;
 
-    float fltTimerValue;
-    public float fltFillFraction;
-    public bool boolLoadNextQuestion = true;
+    float remainingTime;
+    float maxTime;
+
+    public bool isOutOfTime { get; private set; }
 
     void Update()
     {
         UpdateTimer();
+        SetTimerImage();
     }
 
-    public void CancelTimer()
+    private void SetTimerImage()
     {
-        fltTimerValue = 0;
+        //time image fill amount is equal to the proportion of remaining time to the max time
+        timerImage.fillAmount = remainingTime < 0? 0 : remainingTime / maxTime;
     }
 
     void UpdateTimer()
     {
-        fltTimerValue -=Time.deltaTime;
+        remainingTime -= Time.deltaTime;
+        if (remainingTime <= 0)
+        {
+            isOutOfTime = true;
+        }
+    }
 
-        if (boolIsAnsweringQuestion) {
-            if (fltTimerValue >0)
-            {
-                fltFillFraction = fltTimerValue / fltTimeToCompleteQuestion;
-            }
-            else
-            {
-                boolIsAnsweringQuestion = false;
-                fltTimerValue = fltTimeToShowCOrrectAnswer;
-            }
+    public void SetTimer(bool isAnsweringQuestion)
+    {
+        if (isAnsweringQuestion)
+        {
+            //Set time for answering question
+            remainingTime = timeToAnswerQuestion;
         }
         else
         {
-            if (fltTimerValue > 0)
-            {
-                fltFillFraction = fltTimerValue / fltTimeToShowCOrrectAnswer;
-            }
-            else
-            {
-                boolIsAnsweringQuestion = true;
-                fltTimerValue = fltTimeToCompleteQuestion;
-                boolLoadNextQuestion = true;
-            }
+            //Set time to show correct answer
+            remainingTime = timeToShowCorrectAnswer;
         }
 
-        if (fltTimerValue <= 0)
-        {
-            fltTimerValue = fltTimeToCompleteQuestion;
-
-        }
-
-        Debug.Log(boolIsAnsweringQuestion + ": " + fltTimerValue + " = " + fltFillFraction);
+        maxTime = remainingTime;
+        isOutOfTime = false;
     }
-
+    public void EndTimer()
+    {
+        remainingTime = 0;
+    }
 }

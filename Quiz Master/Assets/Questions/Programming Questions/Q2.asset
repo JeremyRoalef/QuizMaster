@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ce61f69b8d2c1f49afe8a7bf2c14b40, type: 3}
+  m_Name: Q2
+  m_EditorClassIdentifier: 
+  strQuestion: Which of the following is true about a binary tree structure?
+  strAnswers:
+  - Binarry trees only work with 1's and 0's for their data type
+  - Binary trees refers to a flow chart structure where conditions flow in two directions
+  - Binary trees create a tree-like structure where one node links to two other nodes
+  - Binary trees are useless
+  intCorrectAnswerIndex: 2
